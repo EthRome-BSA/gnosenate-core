@@ -7,6 +7,7 @@ abstract contract BaseReviewer {
     address inboxAddress;
     IInbox inbox;
     string name;
+
     /**
      */
     constructor(address _inboxAddress, string storage _name) {
@@ -30,6 +31,4 @@ abstract contract BaseReviewer {
     It should specify any additional logic when registering. 
      */
     function _register() internal virtual;
-
-
 }

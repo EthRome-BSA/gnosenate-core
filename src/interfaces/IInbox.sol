@@ -11,6 +11,8 @@ interface IInbox {
     ) external returns (address, uint256);
 
     function emitReview(
+        uint8 score,
+        string calldata name,
         string calldata review,
         address caller,
         address contractAddress

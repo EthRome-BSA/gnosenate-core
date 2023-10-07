@@ -4,18 +4,19 @@ pragma solidity ^0.8.17;
 import {IInbox} from "src/interfaces/IInbox.sol";
 
 contract Inbox is IInbox {
-    // Events 
-    event RequestEmited(bytes nameEncoded);
-    event ProtocolRegistered(bytes nameEncoded);
-    event ReviewEmited(bytes reviewEncoded);
+    // Events
+    event RequestEmited(bytes32 nameEncoded);
+    event ProtocolRegistered(bytes32 nameEncoded);
+    event ReviewEmited(uint8 score, address reviewer, bytes32 name, bytes32 review);
 
     // Errors
     error NotAContract(address _address);
     error NotRegisteredForReview(address _address, string message);
 
     // Mappings
-    mapping(address => bytes) contractToAppName;
+    mapping(address => bytes32) contractToAppName;
     mapping(address => mapping(address => uint256)) userToContractVisitationFreq;
+    mapping(address => mapping(bytes32 => bytes32)) reviewerToProtocolReview;
 
     /**
     Function to register the contract's name
@@ -23,8 +24,8 @@ contract Inbox is IInbox {
      */
     function registerContract(string calldata name) external {
         if (_isContract(msg.sender)) {
-            contractToAppName[msg.sender] = abi.encode(name);
-            emit ProtocolRegistered(abi.encode(name));
+            contractToAppName[msg.sender] = keccak256(abi.encode(name));
+            emit ProtocolRegistered(keccak256(abi.encode(name)));
         } else {
             revert NotAContract(msg.sender);
         }
@@ -43,7 +44,7 @@ contract Inbox is IInbox {
         address contractAddress
     ) external returns (address, uint256) {
         uint256 freq = userToContractVisitationFreq[caller][contractAddress]++;
-        emit RequestEmited(abi.encode(name));
+        emit RequestEmited(keccak256(abi.encode(name)));
         return (caller, freq);
     }
 
@@ -54,6 +55,8 @@ contract Inbox is IInbox {
     @param contractAddress : contract address calling the function
      */
     function emitReview(
+        uint8 score,
+        string calldata name,
         string calldata review,
         address caller,
         address contractAddress
@@ -65,9 +68,11 @@ contract Inbox is IInbox {
             );
         }
 
-        // TODO : store the review somewhere
+        bytes32 encodedReview = keccak256(abi.encode(score, review));
+        bytes32 encodedName = keccak256(abi.encode(name));
+        reviewerToProtocolReview[caller][encodedName];
 
-        emit ReviewEmited(abi.encode((review)));
+        emit ReviewEmited(score, caller, encodedName, encodedReview);
     }
 
     /**
