@@ -17,9 +17,10 @@ interface IInbox {
         address contractAddress
     ) external returns (address, uint256);
 
-    function emitReview(
+    function propagateReview(
         address caller,
         address contractAddress,
-        Review memory review
+        Review memory review,
+        bytes memory response
     ) external;
 }

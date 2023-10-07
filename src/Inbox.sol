@@ -2,8 +2,10 @@
 pragma solidity ^0.8.17;
 
 import {IInbox} from "src/interfaces/IInbox.sol";
+import "sismo-connect-solidity/SismoConnectLib.sol";
 
-contract Inbox is IInbox {
+contract Inbox is IInbox, SismoConnect {
+    using SismoConnectHelper for SismoConnectVerifiedResult;
     // Events
     event RequestEmited(bytes32 nameEncoded);
     event ProtocolRegistered(bytes32 nameEncoded);
@@ -22,7 +24,13 @@ contract Inbox is IInbox {
     // Mappings
     mapping(address => bytes32) contractToAppName;
     mapping(address => mapping(address => uint256)) userToContractVisitationFreq;
-    mapping(address => mapping(bytes32 => bytes32)) reviewerToProtocolReview;
+    mapping(bytes32 => mapping(uint256 => bytes32)) protocolToUsersReview;
+
+    bytes16 private _appId = 0x0;
+    bool private _isImpersonationMode = true;
+
+    //Constructor
+    constructor() SismoConnect(buildConfig(_appId, _isImpersonationMode)) {}
 
     /**
     Function to register the contract's name
@@ -70,10 +78,11 @@ contract Inbox is IInbox {
     @param caller : address calling the contract
     @param contractAddress : contract address calling the function
      */
-    function emitReview(
+    function propagateReview(
         address caller,
         address contractAddress,
-        Review memory review
+        Review memory review,
+        bytes memory response
     ) external {
         if (userToContractVisitationFreq[caller][contractAddress] == 0) {
             revert NotRegisteredForReview(
@@ -82,9 +91,18 @@ contract Inbox is IInbox {
             );
         }
 
+        SismoConnectVerifiedResult memory result = verify({
+            responseBytes: response,
+            auth: buildAuth({authType: AuthType.VAULT}),
+            signature: buildSignature({message: abi.encode(caller)})
+        });
+
+        uint256 vaultId = result.getUserId(AuthType.VAULT);
+
         bytes32 encodedReview = keccak256(abi.encode(review.score, review));
         bytes32 encodedName = keccak256(abi.encode(review.name));
-        reviewerToProtocolReview[caller][encodedName];
+
+        // TODO : implement logic with the review.
 
         emit ReviewEmited(review.score, caller, encodedName, encodedReview);
     }
