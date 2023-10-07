@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-interface IBaseReviewer {}
+interface IBaseReviewer {
+    function _register() external;
+}
