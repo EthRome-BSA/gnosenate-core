@@ -14,17 +14,22 @@ abstract contract BaseReviewer {
         inbox = IInbox(inboxAddress);
         name = _name;
     }
+
+    /**
+    Function to register to be called fromt eh contract inheritting this
+    @param caller : caller of the contract
+     */
+    function register(address caller) external {
+        inbox.registerContract(name);
+        inbox.registerCall(name, caller, address(this));
+        _register();
+    }
+
     /**
     @dev Implement this function if inheritted by contract using our protocol. 
-        It should specify any additional logic when registering. 
+    It should specify any additional logic when registering. 
      */
     function _register() internal virtual;
 
-    /**
-     */
-    function register(address contractUser, address caller) external {
-        inbox.registerContract(name);
-        inbox.registerCall(name, contractUser, caller);
-        _register();
-    }
+
 }
