@@ -9,12 +9,7 @@ contract Inbox is IInbox, SismoConnect {
     // Events
     event RequestEmited(bytes32 nameEncoded);
     event ProtocolRegistered(bytes32 nameEncoded);
-    event ReviewEmited(
-        uint8 score,
-        address reviewer,
-        bytes32 name,
-        bytes32 review
-    );
+    event ReviewEmited(bytes32 name, bytes32 review);
 
     // Errors
     error ProtocolNotRegistered(bytes32 name);
@@ -94,17 +89,18 @@ contract Inbox is IInbox, SismoConnect {
         SismoConnectVerifiedResult memory result = verify({
             responseBytes: response,
             auth: buildAuth({authType: AuthType.VAULT}),
-            signature: buildSignature({message: abi.encode(caller)})
+            signature: buildSignature({message: abi.encode(caller, review)})
         });
 
         uint256 vaultId = result.getUserId(AuthType.VAULT);
-
         bytes32 encodedReview = keccak256(abi.encode(review.score, review));
         bytes32 encodedName = keccak256(abi.encode(review.name));
 
+        protocolToUsersReview[encodedName][vaultId] = encodedReview;
+
         // TODO : implement logic with the review.
 
-        emit ReviewEmited(review.score, caller, encodedName, encodedReview);
+        emit ReviewEmited(encodedName, encodedReview);
     }
 
     /**
