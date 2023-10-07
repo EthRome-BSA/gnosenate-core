@@ -2,6 +2,13 @@
 pragma solidity ^0.8.17;
 
 interface IInbox {
+
+    struct Review {
+        uint8 score;
+        string name; 
+        string review;
+    }
+
     function registerContract(string calldata name) external;
 
     function registerCall(
@@ -11,10 +18,8 @@ interface IInbox {
     ) external returns (address, uint256);
 
     function emitReview(
-        uint8 score,
-        string calldata name,
-        string calldata review,
         address caller,
-        address contractAddress
+        address contractAddress,
+        Review memory review
     ) external;
 }

@@ -7,9 +7,15 @@ contract Inbox is IInbox {
     // Events
     event RequestEmited(bytes32 nameEncoded);
     event ProtocolRegistered(bytes32 nameEncoded);
-    event ReviewEmited(uint8 score, address reviewer, bytes32 name, bytes32 review);
+    event ReviewEmited(
+        uint8 score,
+        address reviewer,
+        bytes32 name,
+        bytes32 review
+    );
 
     // Errors
+    error ProtocolNotRegistered(bytes32 name);
     error NotAContract(address _address);
     error NotRegisteredForReview(address _address, string message);
 
@@ -23,12 +29,10 @@ contract Inbox is IInbox {
     @param name : The name the cotnract wants to give its app in the registry.
      */
     function registerContract(string calldata name) external {
-
         if (_isContract(msg.sender)) {
             contractToAppName[msg.sender] = keccak256(abi.encode(name));
             emit ProtocolRegistered(keccak256(abi.encode(name)));
-        }
-         else {
+        } else {
             revert NotAContract(msg.sender);
         }
     }
@@ -45,9 +49,18 @@ contract Inbox is IInbox {
         address caller,
         address contractAddress
     ) external returns (address, uint256) {
+        bytes32 nameEncoded = keccak256(abi.encode(name));
+
+        if (contractToAppName[caller] == 0) {
+            revert ProtocolNotRegistered(nameEncoded);
+        }
+
+        if (!_isContract(contractAddress)) {
+            revert NotAContract(contractAddress);
+        }
 
         uint256 freq = userToContractVisitationFreq[caller][contractAddress]++;
-        emit RequestEmited(keccak256(abi.encode(name)));
+        emit RequestEmited(nameEncoded);
         return (caller, freq);
     }
 
@@ -58,13 +71,10 @@ contract Inbox is IInbox {
     @param contractAddress : contract address calling the function
      */
     function emitReview(
-        uint8 score,
-        string calldata name,
-        string calldata review,
         address caller,
-        address contractAddress
-    ) 
-    external {
+        address contractAddress,
+        Review memory review
+    ) external {
         if (userToContractVisitationFreq[caller][contractAddress] == 0) {
             revert NotRegisteredForReview(
                 caller,
@@ -72,11 +82,11 @@ contract Inbox is IInbox {
             );
         }
 
-        bytes32 encodedReview = keccak256(abi.encode(score, review));
-        bytes32 encodedName = keccak256(abi.encode(name));
+        bytes32 encodedReview = keccak256(abi.encode(review.score, review));
+        bytes32 encodedName = keccak256(abi.encode(review.name));
         reviewerToProtocolReview[caller][encodedName];
 
-        emit ReviewEmited(score, caller, encodedName, encodedReview);
+        emit ReviewEmited(review.score, caller, encodedName, encodedReview);
     }
 
     /**
