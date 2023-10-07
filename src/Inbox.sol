@@ -23,10 +23,12 @@ contract Inbox is IInbox {
     @param name : The name the cotnract wants to give its app in the registry.
      */
     function registerContract(string calldata name) external {
+
         if (_isContract(msg.sender)) {
             contractToAppName[msg.sender] = keccak256(abi.encode(name));
             emit ProtocolRegistered(keccak256(abi.encode(name)));
-        } else {
+        }
+         else {
             revert NotAContract(msg.sender);
         }
     }
@@ -43,6 +45,7 @@ contract Inbox is IInbox {
         address caller,
         address contractAddress
     ) external returns (address, uint256) {
+
         uint256 freq = userToContractVisitationFreq[caller][contractAddress]++;
         emit RequestEmited(keccak256(abi.encode(name)));
         return (caller, freq);
@@ -60,7 +63,8 @@ contract Inbox is IInbox {
         string calldata review,
         address caller,
         address contractAddress
-    ) external {
+    ) 
+    external {
         if (userToContractVisitationFreq[caller][contractAddress] == 0) {
             revert NotRegisteredForReview(
                 caller,
