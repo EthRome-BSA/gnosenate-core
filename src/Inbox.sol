@@ -13,9 +13,14 @@ contract Inbox is IInbox {
     error NotAContract(address _address);
     error NotRegisteredForReview(address _address, string message);
 
+    // Mappings
     mapping(address => bytes) contractToAppName;
     mapping(address => mapping(address => uint256)) userToContractVisitationFreq;
 
+    /**
+    Function to register the contract's name
+    @param name : The name the cotnract wants to give its app in the registry.
+     */
     function registerContract(string calldata name) external {
         if (_isContract(msg.sender)) {
             contractToAppName[msg.sender] = abi.encode(name);
@@ -24,6 +29,13 @@ contract Inbox is IInbox {
             revert NotAContract(msg.sender);
         }
     }
+
+    /**
+    Function to register the call by the user of some contract
+    @param name : Name given to the App by the contract
+    @param caller : address of the caller
+    @param contractAddress : address of the contract calling the function
+     */
 
     function registerCall(
         string calldata name,
@@ -35,6 +47,12 @@ contract Inbox is IInbox {
         return (caller, freq);
     }
 
+    /**
+    Function to write and emit a review
+    @param review : review to write
+    @param caller : address calling the contract
+    @param contractAddress : contract address calling the function
+     */
     function emitReview(
         string calldata review,
         address caller,
@@ -51,6 +69,11 @@ contract Inbox is IInbox {
 
         emit ReviewEmited(abi.encode((review)));
     }
+
+    /**
+    Function to verify if an address is a contract
+    @param _candidateAddress : address to verify
+     */
 
     function _isContract(
         address _candidateAddress
