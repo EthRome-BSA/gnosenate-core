@@ -5,6 +5,8 @@ import {IInbox} from "src/interfaces/IInbox.sol";
 import "sismo-connect-solidity/SismoConnectLib.sol";
 
 contract Inbox is IInbox, SismoConnect {
+
+    
     using SismoConnectHelper for SismoConnectVerifiedResult;
     // Events
     event RequestEmited(bytes32 nameEncoded);
