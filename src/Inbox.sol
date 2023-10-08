@@ -9,7 +9,6 @@ import {Structs} from "src/libraries/structs.sol";
 contract Inbox is IInbox, SismoConnect {
     using SismoConnectHelper for SismoConnectVerifiedResult;
     // Events
-
     event RequestEmited(bytes nameEncoded);
     event ProtocolRegistered(bytes nameEncoded);
     event ReviewEmited(Structs.Review review);
@@ -80,7 +79,9 @@ contract Inbox is IInbox, SismoConnect {
     }
 
     /**
-     * Function to write and emit a review
+     * Function to write and emit a review. We verify the proof submitted by the person attempting
+     the review, if the proof is incorrect, Sismo will revert, else we write the review in the 
+     registry. 
      * @param review : review to write
      * @param response : response bytes containing the proof.
      */

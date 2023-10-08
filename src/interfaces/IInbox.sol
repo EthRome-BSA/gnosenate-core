@@ -17,7 +17,7 @@ interface IInbox {
     function registerCall(
         address caller,
         address contractAddress
-    ) external returns (address, uint256);
+    ) external;
 
     /**
     Propagate the review onto IPFS if proof of membership in the group of eligible reviewers is 

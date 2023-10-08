@@ -6,7 +6,7 @@ import {Structs} from "src/libraries/structs.sol";
 
 contract Registry is IRegistry {
     mapping(address => bytes) contractAddressToProtocolName;
-    mapping(bytes => bytes[]) nameToReviews;
+    mapping(bytes => bytes[]) nameToCIDS;
 
     function writeToATPNRegistry(
         address contractAddress,
@@ -16,14 +16,29 @@ contract Registry is IRegistry {
     }
 
     function writeToNTRRegistry(Structs.Review memory review) external {
-        bytes memory encodedReview = abi.encode(review.score, review.review);
+
+        bytes memory encodedCID = abi.encode(review.cid);
         bytes memory encodedName = abi.encode(review.name);
-        nameToReviews[encodedName].push(encodedReview);
+
+        nameToCIDS[encodedName].push(encodedCID);
     }
 
     function getProtocolName(
         address contractAddress
     ) external view returns (bytes memory) {
         return contractAddressToProtocolName[contractAddress];
+    }
+
+    function getCID(
+        string memory name
+    ) external view returns (string[] memory)
+    {
+        bytes memory encodedName = abi.encode(name);
+        uint256 length = nameToCIDS[encodedName].length;
+        string[] memory cids = new string[](length);
+        for (uint256 i = 0 ; i < length ; i+=1){
+            cids[i] = abi.decode(nameToCIDS[encodedName][i], (string));
+        }
+        return cids;
     }
 }
