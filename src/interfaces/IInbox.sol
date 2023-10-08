@@ -1,26 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
+import {Structs} from "src/libraries/structs.sol";
 
 interface IInbox {
-
-    struct Review {
-        uint8 score;
-        string name; 
-        string review;
-    }
-
-    function registerContract(string calldata name) external;
+    function registerContract(address caller) external;
 
     function registerCall(
-        string calldata name,
         address caller,
         address contractAddress
     ) external returns (address, uint256);
 
     function propagateReview(
-        address caller,
-        address contractAddress,
-        Review memory review,
+        Structs.Review memory review,
         bytes memory response
     ) external;
 }

@@ -2,6 +2,7 @@
 pragma solidity ^0.8.17;
 
 import {IInbox} from "src/interfaces/IInbox.sol";
+import {Structs} from "src/libraries/structs.sol";
 
 abstract contract BaseReviewer {
     address inboxAddress;
@@ -17,18 +18,22 @@ abstract contract BaseReviewer {
     }
 
     /**
-    Function to register to be called fromt eh contract inheritting this
-    @param caller : caller of the contract
+     * Function to register to be called fromt eh contract inheritting this
+     * @param caller : caller of the contract
      */
     function register(address caller) external {
-        inbox.registerContract(name);
-        inbox.registerCall(name, caller, address(this));
+        inbox.registerContract(address(this));
+        inbox.registerCall(caller, address(this));
         _register();
     }
 
+    function writeReview(bytes memory response, Structs.Review memory review) external {
+        inbox.propagateReview(review, response);
+    }
+
     /**
-    @dev Implement this function if inheritted by contract using our protocol. 
-    It should specify any additional logic when registering. 
+     * @dev Implement this function if inheritted by contract using our protocol.
+     * It should specify any additional logic when registering.
      */
     function _register() internal virtual;
 }
