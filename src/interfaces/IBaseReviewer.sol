@@ -5,12 +5,16 @@ import {Structs} from "src/libraries/structs.sol";
 
 interface IBaseReviewer {
     /**
-     * This function registers the caller in the mapping
-     * @param caller : contracct address caller
+     * We register the contract address in the registry, mapped onto its protocol name
+     * @param contractAddress : contract address we register
      */
+    function register(address contractAddress) external;
 
-    function register(address caller) external;
-
+    /**
+     * Publish a survey on IPFS
+     * @param review : struct containing the review information
+     * @param response : proof of belonging to the dedicated Sismo Group. 
+     */
     function writeReview(
         Structs.Review memory review,
         bytes memory response

@@ -19,7 +19,8 @@ contract Inbox is IInbox, SismoConnect {
     error NotAContract(address _address);
     error NotRegisteredForReview(address _address, string message);
 
-    mapping(address => mapping(address => uint256)) userToContractVisitationFreq;
+    mapping(address => mapping(address => uint256))
+        private userToContractVisitationFreq;
     mapping(uint256 => bytes) reviewersToReview;
 
     address registryAddress;
@@ -28,7 +29,7 @@ contract Inbox is IInbox, SismoConnect {
     bool private _isImpersonationMode = true;
     string name;
 
-    //Constructor
+    // Constructor
     constructor(
         bytes16 _appId,
         string memory _name
@@ -72,7 +73,8 @@ contract Inbox is IInbox, SismoConnect {
             revert NotAContract(contractAddress);
         }
 
-        uint256 freq = userToContractVisitationFreq[caller][contractAddress]++;
+        uint256 freq = userToContractVisitationFreq[caller][contractAddress];
+        userToContractVisitationFreq[caller][contractAddress] += 1;
         emit RequestEmited(nameEncoded);
         return (caller, freq);
     }
@@ -92,11 +94,7 @@ contract Inbox is IInbox, SismoConnect {
             signature: buildSignature({message: abi.encode(tx.origin, review)})
         });
 
-        uint256 vaultId = result.getUserId(AuthType.VAULT);
         registry.writeToNTRRegistry(review);
-
-        // TODO : implement logic with the review.
-
         emit ReviewEmited(review);
     }
 
