@@ -3,8 +3,10 @@ pragma solidity ^0.8.17;
 
 import {IInbox} from "src/interfaces/IInbox.sol";
 import {Structs} from "src/libraries/structs.sol";
+import {Owned} from "solmate/auth/Owned.sol";
 
 abstract contract BaseReviewer {
+
     address inboxAddress;
     IInbox inbox;
     string name;
@@ -32,7 +34,7 @@ abstract contract BaseReviewer {
 
     /**
     Function that enables to propagate the review of entities that are entitled (
-        i.e. members of the associated Sismo group
+    i.e. members of the associated Sismo group
     )
      */
 
@@ -48,4 +50,5 @@ abstract contract BaseReviewer {
      * It should specify any additional logic when registering.
      */
     function _register() internal virtual;
+
 }

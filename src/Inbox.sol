@@ -5,9 +5,8 @@ import {IInbox} from "src/interfaces/IInbox.sol";
 import {IRegistry} from "src/interfaces/IRegistry.sol";
 import "sismo-connect-solidity/SismoConnectLib.sol";
 import {Structs} from "src/libraries/structs.sol";
-import {Owned} from "solmate/auth/Owned.sol";
 
-contract Inbox is IInbox, SismoConnect, Owned {
+contract Inbox is IInbox, SismoConnect {
     using SismoConnectHelper for SismoConnectVerifiedResult;
     // Events
     event RequestEmited(bytes nameEncoded);
@@ -33,10 +32,7 @@ contract Inbox is IInbox, SismoConnect, Owned {
     constructor(
         bytes16 _appId,
         string memory _name
-    )
-        SismoConnect(buildConfig(_appId, _isImpersonationMode))
-        Owned(address(this))
-    {
+    ) SismoConnect(buildConfig(_appId, _isImpersonationMode)) {
         appId = _appId;
         name = _name;
         registry = IRegistry(registryAddress);
@@ -73,10 +69,8 @@ contract Inbox is IInbox, SismoConnect, Owned {
             revert NotAContract(contractAddress);
         }
 
-        uint256 freq = userToContractVisitationFreq[caller][contractAddress];
         userToContractVisitationFreq[caller][contractAddress] += 1;
         emit RequestEmited(nameEncoded);
-        return (caller, freq);
     }
 
     /**
