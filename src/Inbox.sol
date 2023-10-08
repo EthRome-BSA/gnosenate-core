@@ -85,11 +85,11 @@ contract Inbox is IInbox, SismoConnect {
         Structs.Review memory review,
         bytes memory response
     ) external {
-        // verify({
-        //     responseBytes: response,
-        //     auth: buildAuth({authType: AuthType.VAULT}),
-        //     signature: buildSignature({message: abi.encode(tx.origin, review)})
-        // });
+        verify({
+            responseBytes: response,
+            auth: buildAuth({authType: AuthType.VAULT}),
+            signature: buildSignature({message: abi.encode(tx.origin, review)})
+        });
 
         registry.writeToNTRRegistry(review);
         emit ReviewEmited(review);
