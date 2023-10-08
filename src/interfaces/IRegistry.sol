@@ -28,6 +28,11 @@ interface IRegistry {
         address contractAddress
     ) external view returns (bytes memory);
 
+    /**
+    Getter for the review's CIDS from the protocol name
+    @param name : Name of the protocol. 
+     */
+
     function getCIDArray(
         string memory name
     ) external view returns (string[] memory);
