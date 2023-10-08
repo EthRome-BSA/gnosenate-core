@@ -5,8 +5,9 @@ import {IInbox} from "src/interfaces/IInbox.sol";
 import {IRegistry} from "src/interfaces/IRegistry.sol";
 import "sismo-connect-solidity/SismoConnectLib.sol";
 import {Structs} from "src/libraries/structs.sol";
+import {Owned} from "solmate/auth/Owned.sol";
 
-contract Inbox is IInbox, SismoConnect {
+contract Inbox is IInbox, SismoConnect, Owned {
     using SismoConnectHelper for SismoConnectVerifiedResult;
     // Events
     event RequestEmited(bytes nameEncoded);
@@ -32,7 +33,10 @@ contract Inbox is IInbox, SismoConnect {
     constructor(
         bytes16 _appId,
         string memory _name
-    ) SismoConnect(buildConfig(_appId, _isImpersonationMode)) {
+    )
+        SismoConnect(buildConfig(_appId, _isImpersonationMode))
+        Owned(address(this))
+    {
         appId = _appId;
         name = _name;
         registry = IRegistry(registryAddress);
