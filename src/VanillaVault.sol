@@ -9,12 +9,12 @@ contract Vault is BaseReviewer {
 
     uint public totalSupply;
     mapping(address => uint) public balanceOf;
-    string public constant protocolName = "VANILLA_VAULT";
 
     constructor(
         address _token,
-        address _inboxAddress
-    ) BaseReviewer(_inboxAddress, protocolName) {
+        address _inboxAddress,
+        string memory _protocolName
+    ) BaseReviewer(_inboxAddress, _protocolName) {
         token = ERC20(_token);
     }
 

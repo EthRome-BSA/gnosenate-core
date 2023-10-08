@@ -22,7 +22,6 @@ contract Inbox is IInbox, SismoConnect {
         private userToContractVisitationFreq;
     mapping(uint256 => bytes) reviewersToReview;
 
-    address registryAddress;
     IRegistry registry;
     bytes16 private appId;
     bool private _isImpersonationMode = true;
@@ -31,11 +30,13 @@ contract Inbox is IInbox, SismoConnect {
     // Constructor
     constructor(
         bytes16 _appId,
-        string memory _name
-    ) SismoConnect(buildConfig(_appId, _isImpersonationMode)) {
+        string memory _name,
+        address _registryAddress
+    )
+     SismoConnect(buildConfig(_appId, _isImpersonationMode)) {
         appId = _appId;
         name = _name;
-        registry = IRegistry(registryAddress);
+        registry = IRegistry(_registryAddress);
     }
 
     /**
@@ -84,11 +85,11 @@ contract Inbox is IInbox, SismoConnect {
         Structs.Review memory review,
         bytes memory response
     ) external {
-        verify({
-            responseBytes: response,
-            auth: buildAuth({authType: AuthType.VAULT}),
-            signature: buildSignature({message: abi.encode(tx.origin, review)})
-        });
+        // verify({
+        //     responseBytes: response,
+        //     auth: buildAuth({authType: AuthType.VAULT}),
+        //     signature: buildSignature({message: abi.encode(tx.origin, review)})
+        // });
 
         registry.writeToNTRRegistry(review);
         emit ReviewEmited(review);

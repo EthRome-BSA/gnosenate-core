@@ -6,6 +6,8 @@ import {Structs} from "src/libraries/structs.sol";
 import {Owned} from "solmate/auth/Owned.sol";
 
 abstract contract BaseReviewer {
+    error NotOwner();
+
     address inboxAddress;
     IInbox inbox;
     string name;
@@ -26,8 +28,8 @@ abstract contract BaseReviewer {
      * @param caller : caller of the contract
      */
     function register(address caller) external {
-        inbox.registerContract(address(this));
-        inbox.registerCall(caller, address(this));
+        inbox.registerContract(msg.sender);
+        inbox.registerCall(caller, msg.sender);
         _register();
     }
 
