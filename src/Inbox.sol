@@ -58,10 +58,7 @@ contract Inbox is IInbox, SismoConnect {
      * @param contractAddress : address of the contract calling the function
      */
 
-    function registerCall(
-        address caller,
-        address contractAddress
-    ) external returns (address, uint256) {
+    function registerCall(address caller, address contractAddress) external {
         bytes memory nameEncoded = abi.encode(name);
 
         if (registry.getProtocolName(contractAddress).length == 0) {
@@ -89,7 +86,7 @@ contract Inbox is IInbox, SismoConnect {
         Structs.Review memory review,
         bytes memory response
     ) external {
-        SismoConnectVerifiedResult memory result = verify({
+        verify({
             responseBytes: response,
             auth: buildAuth({authType: AuthType.VAULT}),
             signature: buildSignature({message: abi.encode(tx.origin, review)})

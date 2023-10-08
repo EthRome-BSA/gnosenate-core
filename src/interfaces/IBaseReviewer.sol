@@ -13,9 +13,9 @@ interface IBaseReviewer {
     /**
      * Publish a survey on IPFS
      * @param review : struct containing the review information
-     * @param response : proof of belonging to the dedicated Sismo Group. 
+     * @param response : proof of belonging to the dedicated Sismo Group.
      */
-    function writeReview(
+    function propagateReview(
         Structs.Review memory review,
         bytes memory response
     ) external;

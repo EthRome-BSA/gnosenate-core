@@ -10,6 +10,9 @@ abstract contract BaseReviewer {
     string name;
 
     /**
+    Constructor for the BaseReviewer contract. 
+    @param _inboxAddress : address of the associated inbox contract. 
+    @param _name         : name the protocol chooses to set.  
      */
     constructor(address _inboxAddress, string storage _name) {
         inboxAddress = _inboxAddress;
@@ -27,7 +30,13 @@ abstract contract BaseReviewer {
         _register();
     }
 
-    function writeReview(
+    /**
+    Function that enables to propagate the review of entities that are entitled (
+        i.e. members of the associated Sismo group
+    )
+     */
+
+    function propagateReview(
         Structs.Review memory review,
         bytes memory response
     ) external {
