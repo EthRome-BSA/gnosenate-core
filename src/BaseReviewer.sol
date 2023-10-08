@@ -6,7 +6,6 @@ import {Structs} from "src/libraries/structs.sol";
 import {Owned} from "solmate/auth/Owned.sol";
 
 abstract contract BaseReviewer {
-
     address inboxAddress;
     IInbox inbox;
     string name;
@@ -16,7 +15,7 @@ abstract contract BaseReviewer {
     @param _inboxAddress : address of the associated inbox contract. 
     @param _name         : name the protocol chooses to set.  
      */
-    constructor(address _inboxAddress, string storage _name) {
+    constructor(address _inboxAddress, string memory _name) {
         inboxAddress = _inboxAddress;
         inbox = IInbox(inboxAddress);
         name = _name;
@@ -50,5 +49,4 @@ abstract contract BaseReviewer {
      * It should specify any additional logic when registering.
      */
     function _register() internal virtual;
-
 }

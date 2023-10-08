@@ -16,7 +16,6 @@ contract Registry is IRegistry {
     }
 
     function writeToNTRRegistry(Structs.Review memory review) external {
-
         bytes memory encodedCID = abi.encode(review.cid);
         bytes memory encodedName = abi.encode(review.name);
 
@@ -31,12 +30,11 @@ contract Registry is IRegistry {
 
     function getCIDArray(
         string memory name
-    ) external view returns (string[] memory)
-    {
+    ) external view returns (string[] memory) {
         bytes memory encodedName = abi.encode(name);
         uint256 length = nameToCIDS[encodedName].length;
         string[] memory cids = new string[](length);
-        for (uint256 i = 0 ; i < length ; i+=1){
+        for (uint256 i = 0; i < length; i += 1) {
             cids[i] = abi.decode(nameToCIDS[encodedName][i], (string));
         }
         return cids;
