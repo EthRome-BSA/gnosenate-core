@@ -28,7 +28,7 @@ interface IRegistry {
         address contractAddress
     ) external view returns (bytes memory);
 
-    function getCID(
+    function getCIDArray(
         string memory name
     ) external view returns (string[] memory);
 }

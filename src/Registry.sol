@@ -29,7 +29,7 @@ contract Registry is IRegistry {
         return contractAddressToProtocolName[contractAddress];
     }
 
-    function getCID(
+    function getCIDArray(
         string memory name
     ) external view returns (string[] memory)
     {
