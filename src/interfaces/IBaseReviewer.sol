@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
+import {Structs} from "src/libraries/structs.sol";
+
 interface IBaseReviewer {
     /**
      * This function registers the caller in the mapping
@@ -8,4 +10,9 @@ interface IBaseReviewer {
      */
 
     function register(address caller) external;
+
+    function writeReview(
+        Structs.Review memory review,
+        bytes memory response
+    ) external;
 }

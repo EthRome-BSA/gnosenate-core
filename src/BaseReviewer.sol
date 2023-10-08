@@ -27,7 +27,10 @@ abstract contract BaseReviewer {
         _register();
     }
 
-    function writeReview(bytes memory response, Structs.Review memory review) external {
+    function writeReview(
+        Structs.Review memory review,
+        bytes memory response
+    ) external {
         inbox.propagateReview(review, response);
     }
 
