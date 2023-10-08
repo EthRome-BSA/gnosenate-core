@@ -1,0 +1,14 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+
+# See more config options https://github.com/foundry-rs/foundry/tree/master/config
+
+[rpc_endpoints]
+gnosis = "${GNOSIS_TESTNET_RPC_URL}"
+base = "${BASE_TESTNET_RPC_URL}"
+
+[etherscan]
+gnosis = { key = "${GNOSISCAN_API_KEY}" }
+base = { key = "${BASESCAN_API_KEY}"}
